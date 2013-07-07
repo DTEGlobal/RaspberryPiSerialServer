@@ -35,11 +35,12 @@ DiagnosticServer = TCPServer(('localhost',3001),DiagnosticHandler)
 
 # Main Serial Server
 def StartSerialServer ():
+    print("Serial Server Running on: %s" % (SerialServer.server_address,))
     SerialServer.serve_forever()
 
 # Returns the status of the serial server for diagnostic purposes
 def StartDiagnosticServer ():
-    print("Serial Server Running on: %s" % (SerialServer.server_address,))
+    print("Diagnostic Server Running on: %s" % (DiagnosticServer.server_address,))
     DiagnosticServer.serve_forever()
 
 SSSt = threading.Thread(target=StartSerialServer)
