@@ -26,12 +26,12 @@ __author__ = 'Cesar'
 import threading
 
 from socketserver import TCPServer
-from TCPSerialServer import SerialClientHandler
-from TCPSerialServer import DiagnosticHandler
+from TCPSerialServer import *
 
 
 SerialServer = TCPServer(('localhost',3000),SerialClientHandler)
 DiagnosticServer = TCPServer(('localhost',3001),DiagnosticHandler)
+FindServer = TCPServer(('localhost',3002),FindHandler)
 
 # Main Serial Server
 def StartSerialServer ():
@@ -43,8 +43,16 @@ def StartDiagnosticServer ():
     print("Diagnostic Server Running on: %s" % (DiagnosticServer.server_address,))
     DiagnosticServer.serve_forever()
 
+# Returns server IP address to a "Find Server" client request
+def StartFindServer ():
+    print("Find Server Running on: %s" % (FindServer.server_address,))
+    FindServer.serve_forever()
+
 SSSt = threading.Thread(target=StartSerialServer)
 SSSt.start()
 
 SDSt = threading.Thread(target=StartDiagnosticServer)
 SDSt.start()
+
+SFSt = threading.Thread(target=StartFindServer)
+SFSt.start()

@@ -28,4 +28,11 @@ class DiagnosticHandler (StreamRequestHandler):
         response = "Diag:"+ (serveraddress)
         self.wfile.write(response.encode())
 
+# Handles Serial Clients "Find Server" requests
+class FindHandler (StreamRequestHandler):
+    def handle(self):
+        if self.request.recv(512).strip().decode() == "Find Server":
+            serveraddress, serverport = self.server.server_address
+            response = "Server Address:"+ (serveraddress)
+            self.wfile.write(response.encode())
 
