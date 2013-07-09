@@ -1,4 +1,5 @@
 __author__ = 'Cesar'
+
 #-------------------------------------------------------------------------------
 # Name:        Client
 # Purpose:
@@ -11,11 +12,22 @@ __author__ = 'Cesar'
 #-------------------------------------------------------------------------------
 
 from socket import *
+import Serial, Server
 
-# Send "Find Server" request via UDP
-client = socket(AF_INET,SOCK_DGRAM)
-client.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
-client.sendto("Find Server".encode(),('255.255.255.255',10000))
-address,port = client.recvfrom(256)
-print ("Remote IP: {}".format(address.decode()))
-client.close()
+def Client():
+
+    print ("ClientThread: Client Thread Running ...")
+
+    while True:
+        if Serial.MessageFromSerial != "":
+            ClientSocket = socket(AF_INET,SOCK_DGRAM)
+            if Server.RemoteIP != "":
+                ClientSocket.sendto(Serial.MessageFromSerial.encode(),(Server.RemoteIP,10000))
+                print("ClientThread: Sent to [{}] -> {}".format(Server.RemoteIP,Serial.MessageFromSerial))
+            else:
+                ClientSocket.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
+                ClientSocket.sendto(Serial.MessageFromSerial.encode(),('255.255.255.255',10000))
+                print("ClientThread: Sent to 255.255.255.255 -> {}".format(Serial.MessageFromSerial))
+            ClientSocket.close()
+            Serial.MessageFromSerial = ""
+            Server.RemoteIP = ""
