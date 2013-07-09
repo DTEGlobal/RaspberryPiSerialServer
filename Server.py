@@ -25,28 +25,41 @@ __author__ = 'Cesar'
 
 import threading
 
-from socketserver import TCPServer
+from socketserver import TCPServer, UDPServer
 from TCPSerialServer import *
+import socket
 
 
-SerialServer = TCPServer(('localhost',3000),SerialClientHandler)
-DiagnosticServer = TCPServer(('localhost',3001),DiagnosticHandler)
-FindServer = TCPServer(('localhost',3002),FindHandler)
+SerialServer = TCPServer(('',3000),SerialClientHandler)
+DiagnosticServer = TCPServer(('',3001),DiagnosticHandler)
 
 # Main Serial Server
 def StartSerialServer ():
-    print("Serial Server Running on: %s" % (SerialServer.server_address,))
+    ip, port = SerialServer.server_address
+    print("Serial Server Running on: {}:{}".format(socket.gethostbyname(socket.gethostname()),port))
     SerialServer.serve_forever()
 
 # Returns the status of the serial server for diagnostic purposes
 def StartDiagnosticServer ():
-    print("Diagnostic Server Running on: %s" % (DiagnosticServer.server_address,))
+    ip, port = DiagnosticServer.server_address
+    print("Diagnostic Server Running on: {}:{}".format(socket.gethostbyname(socket.gethostname()),port))
     DiagnosticServer.serve_forever()
 
 # Returns server IP address to a "Find Server" client request
 def StartFindServer ():
-    print("Find Server Running on: %s" % (FindServer.server_address,))
-    FindServer.serve_forever()
+    s = socket.socket(AF_INET,SOCK_DGRAM)
+    s.bind(('',10000))
+    localaddress = socket.gethostbyname(socket.gethostname())
+    print("Find Server Running on: {}:{}".format(localaddress,10000))
+    while True:
+        data,address=s.recvfrom(256)
+        addr,port = address
+        print ("Connection Received: Data = {} Address = {} Port = {}".format(data.decode(),addr,port))
+        if data.decode() == "Find Server":
+            s.sendto(localaddress.encode(),address)
+        else:
+            s.sendto("Error".encode(),address)
+
 
 SSSt = threading.Thread(target=StartSerialServer)
 SSSt.start()

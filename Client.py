@@ -12,9 +12,10 @@ __author__ = 'Cesar'
 
 from socket import *
 
-client = socket(AF_INET,SOCK_STREAM)
-client.connect(('localhost',3000))
-client.send("va1".encode())
-respuesta = client.recv(512)
-print (respuesta.decode())
+# Send "Find Server" request via UDP
+client = socket(AF_INET,SOCK_DGRAM)
+client.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
+client.sendto("Find Server".encode(),('255.255.255.255',10000))
+address,port = client.recvfrom(256)
+print ("Remote IP: {}".format(address.decode()))
 client.close()

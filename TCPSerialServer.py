@@ -11,7 +11,9 @@ __author__ = 'Cesar'
 #-------------------------------------------------------------------------------
 
 # TODO check if import for Python 2 is needed
-from socketserver import StreamRequestHandler
+from socketserver import StreamRequestHandler, DatagramRequestHandler
+from socket import *
+
 
 
 # Handles Serial Clients requests
@@ -27,12 +29,4 @@ class DiagnosticHandler (StreamRequestHandler):
         serveraddress, serverport = self.server.server_address
         response = "Diag:"+ (serveraddress)
         self.wfile.write(response.encode())
-
-# Handles Serial Clients "Find Server" requests
-class FindHandler (StreamRequestHandler):
-    def handle(self):
-        if self.request.recv(512).strip().decode() == "Find Server":
-            serveraddress, serverport = self.server.server_address
-            response = "Server Address:"+ (serveraddress)
-            self.wfile.write(response.encode())
 
