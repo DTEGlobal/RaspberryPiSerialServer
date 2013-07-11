@@ -23,11 +23,17 @@ def Client():
             ClientSocket = socket(AF_INET,SOCK_DGRAM)
             if Server.RemoteIP != "":
                 ClientSocket.sendto(Serial.MessageFromSerial.encode(),(Server.RemoteIP,10000))
-                print("ClientThread: Sent to [{}] -> {}".format(Server.RemoteIP,Serial.MessageFromSerial))
+                data_toPrint = Serial.MessageFromSerial.decode()
+                # Remove last 3 chars (CR LF)
+                data_toPrint = data_toPrint[:-2]
+                print("ClientThread: Sent to [{}] -> [{}]".format(Server.RemoteIP,data_toPrint))
             else:
                 ClientSocket.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
                 ClientSocket.sendto(Serial.MessageFromSerial.encode(),('255.255.255.255',10000))
-                print("ClientThread: Sent to 255.255.255.255 -> {}".format(Serial.MessageFromSerial))
+                data_toPrint = Serial.MessageFromSerial.decode()
+                # Remove last 3 chars (CR LF)
+                data_toPrint = data_toPrint[:-2]
+                print("ClientThread: Sent to [255.255.255.255] -> [{}]".format(data_toPrint))
             ClientSocket.close()
             Serial.MessageFromSerial = ""
             Server.RemoteIP = ""
