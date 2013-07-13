@@ -28,7 +28,7 @@ def Server ():
     IpMatch = re.search('\d{1,3}\.\d{1,3}\.\d{1,3}.\d{1,3}',ifconfig)
     # Assign Result
     localaddress = IpMatch.group()
-    print("ServerThread: Server Running on -> [{}]:[{}]".format(localaddress,'10000'))
+    print("ST: Server Running on->[{}]:[{}]".format(localaddress,'10000'))
     while True:
         data,address=s.recvfrom(256)
         data_toPrint = data.decode()
@@ -36,10 +36,10 @@ def Server ():
         data_toPrint = data_toPrint[:-2]
         RemoteIP,port = address
         if localaddress != RemoteIP:
-            print ("ServerThread: Cx Received: Address -> [{}] Port -> [{}] Data -> [{}]"\
+            print ("ST: Cx Received: Address->[{}] Port->[{}] Data->[{}]"\
                 .format(RemoteIP,port,data_toPrint))
             MessageFromUDP = data.decode()
         else:
-            print ("ServerThread: Cx Received: Address -> [Mine!]: Echo do nothing!")
+            print ("ST: Cx Received: Address->[Mine!]: Echo do nothing!")
 
 

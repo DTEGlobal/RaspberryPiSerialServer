@@ -19,32 +19,32 @@ MessageFromSerial = ""
 
 def Rx():
 
-    print ("RxSerialThread: Rx Thread Running ...")
+    print ("RxST: Rx Thread Running ...")
     while True:
         global MessageFromSerial
         try:
             MessageFromSerial = port.readline()
             # Remove last 3 chars (CR LF)
             data_toPrint = MessageFromSerial[:-2]
-            print ("RxSerialThread: Rx -> [{}]".format(data_toPrint))
+            print ("RxST: Rx Data->[{}]".format(data_toPrint))
         except serial.SerialException as e:
-            print ("RxSerialThread: Error -> [{}]".format(e))
+            print ("RxST: Error->[{}]".format(e))
             port.flushInput()
 
 
 def Tx():
 
-    print ("TxSerialThread: Tx Thread Running ...")
+    print ("TxST: Tx Thread Running ...")
     while True:
         if Server.MessageFromUDP != "":
             try:
                 port.write(Server.MessageFromUDP)
                 # Remove last 3 chars (CR LF)
                 data_toPrint = Server.MessageFromUDP[:-2]
-                print ("TxSerialThread: Tx -> [{}]".format(data_toPrint))
+                print ("TxST: Tx Data->[{}]".format(data_toPrint))
                 Server.MessageFromUDP = ""
             except serial.SerialException as e:
-                print ("TxSerialThread: Error -> [{}]".format(e))
+                print ("TxST: Error->[{}]".format(e))
                 port.flushOutput()
 
 def Serial():
