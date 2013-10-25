@@ -16,6 +16,17 @@ from Server import Server
 from Client import Client
 from Serial import Serial
 import os
+import time
+
+def watchdog():
+    os.system("sudo python /home/pi/watchdog/main.py")
+
+
+ServerThread = threading.Thread(target=watchdog)
+ServerThread.daemon = True
+ServerThread.start()
+
+time.sleep(.5)
 
 ServerThread = threading.Thread(target=Server)
 ServerThread.daemon = True
@@ -29,7 +40,6 @@ SerialThread = threading.Thread(target=Serial)
 SerialThread.daemon = True
 SerialThread.start()
 
-os.system("sudo python3 /home/pi/SerialServer/Watchdog.py")
 
 while True:
     a=0 #Do nothing

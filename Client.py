@@ -13,27 +13,31 @@ __author__ = 'Cesar'
 
 from socket import *
 import Serial, Server
+import uuid
+import Feeder
 
 def Client():
-
-    print ("ClientThread: Client Thread Running ...")
-
+    id = str(uuid.uuid4())
+    data_toPrint = "ClientThread: Client Thread Running ..."
+    #print (data_toPrint)
     while True:
+        Feeder.feeder(id,data_toPrint)
+        data_toPrint = ""
         if Serial.MessageFromSerial != "":
             ClientSocket = socket(AF_INET,SOCK_DGRAM)
             if Server.RemoteIP != "":
                 ClientSocket.sendto(Serial.MessageFromSerial.encode(),(Server.RemoteIP,10000))
                 data_toPrint = Serial.MessageFromSerial.decode()
                 # Remove last 3 chars (CR LF)
-                data_toPrint = data_toPrint[:-2]
-                print("CT: Sent to->[{}] Data->[{}]".format(Server.RemoteIP,data_toPrint))
+                data_toPrint = "CT: Sent to->[{}] Data->[{}]".format(Server.RemoteIP,data_toPrint[:-2])
+                #print(data_toPrint)
             else:
                 ClientSocket.setsockopt(SOL_SOCKET,SO_BROADCAST,1)
-                ClientSocket.sendto(Serial.MessageFromSerial.encode(),('255.255.255.255',10000))
+                ClientSocket.sendto(Serial.MessageFromSerial.encode(),('192.168.1.255',10000))
                 data_toPrint = Serial.MessageFromSerial.decode()
                 # Remove last 3 chars (CR LF)
-                data_toPrint = data_toPrint[:-2]
-                print("CT: Sent to->[255.255.255.255] Data->[{}]".format(data_toPrint))
+                data_toPrint = "CT: Sent to->[192.168.1.255] Data->[{}]".format(data_toPrint[:-2])
+                #print(data_toPrint)
             ClientSocket.close()
             Serial.MessageFromSerial = ""
             Server.RemoteIP = ""
